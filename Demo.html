@@ -1770,7 +1770,7 @@
                     
                     // Standard calculations
                     const scope1 = fleet * 2.31; 
-                    const scope2 = energy * 0.233; 
+                    const scope2 = (energy * 0.233) / 1000; 
                     const greenScore = Math.min(100, Math.round(greenPercentage * 100 + (Math.random() * 10)));
                     
                     // Calculate compliance rating (0-100)
