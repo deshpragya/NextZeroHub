@@ -96,15 +96,26 @@
         }
         
         .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: var(--white);
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 1rem;
         }
-        
+
         .btn-outline:hover {
             background: var(--primary);
+            border: 2px solid var(--primary);
             color: var(--white);
-        }
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }   
         
         /* Header Styles */
         header {
@@ -122,6 +133,11 @@
             padding: 15px 0;
         }
         
+        .logo-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
         .logo {
             display: flex;
             align-items: center;
@@ -224,6 +240,8 @@
             font-size: 0.9rem;
             margin-top: 15px;
             font-weight: 500;
+            color: var(--white);
+            text-decoration: none;
         }
         
         .ai-tag i {
@@ -415,24 +433,43 @@
         .calculator-container {
             display: flex;
             flex-wrap: wrap;
-            align-items: center;
+            align-items: flex-start;
             gap: 50px;
+            padding: 0 20px;
         }
         
         .calculator-content {
             flex: 1 1 400px;
+            position: relative;
         }
         
-        .calculator-form {
+        .calculator-form-container {
             flex: 1 1 400px;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 8px;
         }
+
+        .calculator-content h2, .calculator-content h3 {
+            color: var(--white);
+        }
+
+        .calculator-content h2::after {
+            background: var(--accent);
+        }
+
+        .calculator .scope-list li {
+            color: var(--white);
+        }
+        
+        .calculator .scope-list i {
+            color: var(--white);
+            opacity: 0.8;
+        }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .form-group label {
@@ -442,21 +479,14 @@
         }
         
         .form-group input, 
-        .form-group select {
+        .form-group select,
+        .scope-panel input,
+        .scope-panel select {
             width: 100%;
             padding: 12px;
             border-radius: 4px;
             border: none;
             background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .calculator h2, 
-        .calculator h3 {
-            color: var(--white);
-        }
-        
-        .calculator h2::after {
-            background: var(--accent);
         }
         
         /* AI Features Section */
@@ -571,6 +601,9 @@
             .ai-container {
                 grid-template-columns: 1fr;
             }
+            .calculator-container {
+                flex-direction: column;
+            }
         }
         
         @media (max-width: 768px) {
@@ -588,10 +621,6 @@
             
             .form-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .calculator-container {
-                flex-direction: column;
             }
         }
         
@@ -672,6 +701,10 @@
             margin: 20px 0;
         }
         
+        .results-card-container.hidden {
+            display: none;
+        }
+
         .result-card {
             background: var(--light);
             padding: 15px;
@@ -776,6 +809,33 @@
             color: var(--light);
             opacity: 0.8;
         }
+
+        /* — Scope Tabs & Panels — */
+.scope-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.scope-tab {
+  padding: 8px 16px;
+  margin: 0 6px;
+  background: var(--primary-light);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.scope-tab.active,
+.scope-tab:hover {
+  background: var(--primary);
+}
+.scope-panel {
+  display: none;
+}
+.scope-panel.active {
+  display: block;
+}
 
         /* Increased form group spacing */
         .form-group {
@@ -901,10 +961,24 @@
             text-align: center;
             margin-bottom: 30px;
         }
+
+        .ai-tag:hover {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form textarea {
+            width: 100%;
+            max-width: 100%;
+            min-height: 120px;
+            resize: vertical;
+        }
+
     </style>
 </head>
 <body>
-    <!-- Admin Panel (Initially Hidden) -->
     <section id="admin-panel" class="admin-panel" style="display: none;">
         <div class="admin-container">
             <div class="admin-header">
@@ -1024,7 +1098,7 @@
                                 <td>3,500 tCO2e</td>
                                 <td>15,000 tCO2e</td>
                                 <td>82%</td>
-                            </tr>
+                            </td>
                             <tr>
                                 <td>ESG-2023-002</td>
                                 <td>Manchester Mutual</td>
@@ -1059,7 +1133,6 @@
         </div>
     </section>
     
-    <!-- Login Form (Initially Hidden) -->
     <section id="login-section" class="login-container" style="display: none;">
         <div class="login-form">
             <h2>Admin Login</h2>
@@ -1072,20 +1145,20 @@
                     <label for="admin-password">Password</label>
                     <input type="password" id="admin-password" placeholder="Enter your password" required>
                 </div>
-                <button type="submit" class="btn" style="width: 100%;">Login</button>
+                <button type="submit" class="btn" style="width: 100%; margin-bottom: 15px;">Login</button> <button type="button" class="btn" id="login-back-to-main" style="width: 100%;">Back to Main Site</button>
             </form>
         </div>
     </section>
     
-    <!-- Main Application -->
     <div id="main-app">
-        <!-- Header -->
         <header>
             <div class="container header-container">
-                <div class="logo">
-                    <i class="fas fa-leaf"></i>
-                    <h1>NextZero Hub</h1>
-                </div>
+                <a href="#" class="logo-link">
+                    <div class="logo">
+                        <i class="fas fa-leaf"></i>
+                        <h1>NextZero Hub</h1>
+                    </div>
+                </a>
                 <ul class="nav-menu">
                     <li><a href="#scopes">Scopes</a></li>
                     <li><a href="#green-lending">Green Lending</a></li>
@@ -1100,20 +1173,18 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
         <section class="hero">
             <div class="container hero-content">
                 <h1>AI-Powered ESG Solutions for UK Small Banks</h1>
                 <p>NextZero Hub provides advanced ESG compliance solutions with AI-driven insights for Scope 1, 2 & 3 emissions and predictive green lending analytics.</p>
                 <a href="#calculator" class="btn">Calculate Your ESG Impact</a>
                 <a href="#contact" class="btn btn-outline">Request Demo</a>
-                <div class="ai-tag">
+                <a href="#ai-features" class="ai-tag">
                     <i class="fas fa-brain"></i> AI-Powered Predictive Analytics
-                </div>
+                </a>
             </div>
         </section>
 
-        <!-- Scopes Section -->
         <section id="scopes">
             <div class="container">
                 <div class="section-header animated">
@@ -1122,7 +1193,6 @@
                 </div>
 
                 <div class="scopes-container">
-                    <!-- Scope 1 Card -->
                     <div class="scope-card animated delay-1">
                         <div class="scope-header">
                             <h3>Scope 1</h3>
@@ -1140,7 +1210,6 @@
                         </div>
                     </div>
 
-                    <!-- Scope 2 Card -->
                     <div class="scope-card animated delay-2">
                         <div class="scope-header">
                             <h3>Scope 2</h3>
@@ -1158,7 +1227,6 @@
                         </div>
                     </div>
 
-                    <!-- Scope 3 Card -->
                     <div class="scope-card animated delay-3">
                         <div class="scope-header">
                             <h3>Scope 3</h3>
@@ -1179,7 +1247,6 @@
             </div>
         </section>
 
-        <!-- Green Lending Section -->
         <section id="green-lending" class="green-lending">
             <div class="container">
                 <div class="section-header animated">
@@ -1223,7 +1290,6 @@
             </div>
         </section>
 
-        <!-- AI Features Section -->
         <section id="ai-features" class="ai-features">
             <div class="container">
                 <div class="section-header animated">
@@ -1244,8 +1310,8 @@
                                     <p>AI predicts 25-40% growth potential in your green lending portfolio over the next 3 years.</p>
                                 </div>
                                 <div class="insight-card">
-                                    <h4><i class="fas fa-exclamation-triangle"></i> Risk Mitigation</h4>
-                                    <p>Identifies high-carbon assets with 92% accuracy for proactive management.</p>
+                                    <h4><i class="fas fa-exclamation-triangle"></i> Carbon Risk Exposure</h4>
+                                    <p>17% of your current portfolio is in high-carbon sectors requiring transition planning.</p>
                                 </div>
                                 <div class="insight-card">
                                     <h4><i class="fas fa-pound-sign"></i> ROI Projection</h4>
@@ -1267,7 +1333,6 @@
             </div>
         </section>
 
-        <!-- Calculator Section -->
         <section id="calculator" class="calculator">
             <div class="container calculator-container">
                 <div class="calculator-content animated">
@@ -1285,58 +1350,159 @@
                         </ul>
                     </div>
                 </div>
-                <div class="calculator-form animated delay-1">
-                    <h3>Calculate Your Emissions</h3>
-                    <form id="emissions-calculator">
-                        <div class="form-group">
-                            <label for="energy">Annual Electricity Consumption (kWh)</label>
-                            <input type="number" id="energy" placeholder="Enter consumption" required>
-                            <small class="form-helper">Typical UK bank: 500,000-2M kWh/year</small>
+
+                <div class="calculator-form-container animated delay-1">
+                    <div class="scope-tabs">
+                        <button class="scope-tab active" data-scope="summary">Summary</button>
+                        <button class="scope-tab" data-scope="1">Scope 1</button>
+                        <button class="scope-tab" data-scope="2">Scope 2</button>
+                        <button class="scope-tab" data-scope="3">Scope 3</button>
+                    </div>
+                    <div class="scope-panels">
+                        <div id="scope-summary-panel" class="scope-panel active">
+                            <div class="form-group">
+                                <label for="energy">Annual Electricity Consumption (kWh)</label>
+                                <input type="number" id="energy" placeholder="Enter consumption" required>
+                                <small class="form-helper">Typical UK bank: 500,000-2M kWh/year</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="fleet">Company Vehicle Fleet Size</label>
+                                <input type="number" id="fleet" placeholder="Number of vehicles" required>
+                                <small class="form-helper">Include all company-owned vehicles</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="portfolio">Total Loan Portfolio (£ million)</label>
+                                <input type="number" id="portfolio" placeholder="Portfolio value" required>
+                                <small class="form-helper">Total value of outstanding loans</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="scope3-type">Scope 3 Category</label>
+                                <select id="scope3-type" required>
+                                    <option value="financed">Financed Emissions</option>
+                                    <option value="travel">Business Travel</option>
+                                    <option value="supply">Supply Chain</option>
+                                    <option value="waste">Waste Management</option>
+                                    <option value="other">Other Indirect</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label id="scope3-value-label" for="scope3-value">Carbon Intensity Factor</label>
+                                <input type="number" id="scope3-value" placeholder="Enter tCO₂e per £ million" required>
+                                <small id="scope3-helper" class="form-helper">
+                                    Metric tons CO₂e per £ million financed
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="green-percentage">Percentage of Green Loans</label>
+                                <select id="green-percentage" required>
+                                    <option value="0.1">0-10%</option>
+                                    <option value="0.25">11-25%</option>
+                                    <option value="0.5" selected>26-50%</option>
+                                    <option value="0.75">51-75%</option>
+                                    <option value="1">76-100%</option>
+                                </select>
+                                <small class="form-helper">Loans aligned with UK Green Taxonomy</small>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="fleet">Company Vehicle Fleet Size</label>
-                            <input type="number" id="fleet" placeholder="Number of vehicles" required>
-                            <small class="form-helper">Include all company-owned vehicles</small>
+                        <div id="scope-1-panel" class="scope-panel">
+                            <div class="form-group">
+                                <label for="csv-input-1">Or Upload Your Emission Data (.csv)</label>
+                                <input type="file" id="csv-input-1" accept=".csv">
+                                <small class="form-helper">
+                                    CSV columns: <strong>Fuel Type</strong>, <strong>Quantity</strong>
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="diesel-1">Diesel Consumed (L)</label>
+                                <input type="number" id="diesel-1" placeholder="Enter litres">
+                            </div>
+                            <div class="form-group">
+                                <label for="petrol-1">Petrol Consumed (L)</label>
+                                <input type="number" id="petrol-1" placeholder="Enter litres">
+                            </div>
+                            <div class="form-group">
+                                <label for="lpg-1">LPG Consumed (L)</label>
+                                <input type="number" id="lpg-1" placeholder="Enter litres">
+                            </div>
+                            <div class="form-group">
+                                <label for="natural-gas-1">Natural Gas (kWh)</label>
+                                <input type="number" id="natural-gas-1" placeholder="Enter kWh">
+                            </div>
+                            <div class="form-group">
+                                <label for="refrigerant-type-1">Refrigerant Type</label>
+                                <select id="refrigerant-type-1">
+                                    <option value="r410a">R-410A</option>
+                                    <option value="r134a">R-134a</option>
+                                    <option value="r32">R-32</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="refrigerant-value-1">Refrigerant Quantity (kg)</label>
+                                <input type="number" id="refrigerant-value-1" placeholder="Enter kg">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="portfolio">Total Loan Portfolio (£ million)</label>
-                            <input type="number" id="portfolio" placeholder="Portfolio value" required>
-                            <small class="form-helper">Total value of outstanding loans</small>
+            
+                        <div id="scope-2-panel" class="scope-panel">
+                            <div class="form-group">
+                                <label for="csv-input-2">Or Upload Your Energy Data (.csv)</label>
+                                <input type="file" id="csv-input-2" accept=".csv">
+                                <small class="form-helper">
+                                    CSV columns: <strong>Energy Type</strong>, <strong>Quantity</strong>
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="energy-2">Annual Electricity (kWh)</label>
+                                <input type="number" id="energy-2" placeholder="Enter consumption">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="scope3-type">Scope 3 Category</label>
-                            <select id="scope3-type" required>
-                                <option value="financed">Financed Emissions</option>
-                                <option value="travel">Business Travel</option>
-                                <option value="supply">Supply Chain</option>
-                                <option value="waste">Waste Management</option>
-                                <option value="other">Other Indirect</option>
-                            </select>
+            
+                        <div id="scope-3-panel" class="scope-panel">
+                            <div class="form-group">
+                                <label for="csv-input-3">Or Upload Your Loan Data (.csv)</label>
+                                <input type="file" id="csv-input-3" accept=".csv">
+                                <small class="form-helper">
+                                    CSV columns: <strong>Category</strong>, <strong>Value</strong>
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="portfolio-3">Total Loan Portfolio (£ m)</label>
+                                <input type="number" id="portfolio-3" placeholder="Enter value">
+                            </div>
+                            <div class="form-group">
+                                <label for="scope3-type-3">Scope 3 Category</label>
+                                <select id="scope3-type-3">
+                                    <option value="financed">Financed Emissions</option>
+                                    <option value="travel">Business Travel</option>
+                                    <option value="supply">Supply Chain</option>
+                                    <option value="waste">Waste Management</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label id="scope3-value-3-label" for="scope3-value-3">Metric Value</label>
+                                <input type="number" id="scope3-value-3" placeholder="Enter metric">
+                                <small id="scope3-helper-3" class="form-helper">
+                                </small>
+                            </div>
+                            <div class="form-group">
+                                <label for="green-percentage-3">Green Loans %</label>
+                                <select id="green-percentage-3">
+                                    <option value="0.1">0–10%</option>
+                                    <option value="0.25">11–25%</option>
+                                    <option value="0.5">26–50%</option>
+                                    <option value="0.75">51–75%</option>
+                                    <option value="1">76–100%</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label id="scope3-value-label" for="scope3-value">Carbon Intensity Factor</label>
-                            <input type="number" id="scope3-value" placeholder="Enter tCO₂e per £ million" required>
-                            <small id="scope3-helper" class="form-helper">
-                                Metric tons CO₂e per £ million financed
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <label for="green-percentage">Percentage of Green Loans</label>
-                            <select id="green-percentage" required>
-                                <option value="0.1">0-10%</option>
-                                <option value="0.25">11-25%</option>
-                                <option value="0.5" selected>26-50%</option>
-                                <option value="0.75">51-75%</option>
-                                <option value="1">76-100%</option>
-                            </select>
-                            <small class="form-helper">Loans aligned with UK Green Taxonomy</small>
-                        </div>
-                        <button type="submit" class="btn">Calculate ESG Impact</button>
-                    </form>
+                    </div>
+                    <div style="text-align:center; margin-top:30px;">
+                        <button id="calculate-btn" class="btn">Calculate ESG Impact</button>
+                    </div>
                 </div>
             </div>
         </section>
-        <!-- Contact Section -->
+          
         <section id="contact">
             <div class="container">
                 <div class="section-header animated">
@@ -1375,15 +1541,16 @@
             </div>
         </section>
 
-        <!-- Footer -->
         <footer>
             <div class="container">
                 <div class="footer-grid">
                     <div class="footer-col">
-                        <div class="logo">
-                            <i class="fas fa-leaf"></i>
-                            <h3>NextZero Hub</h3>
-                        </div>
+                        <a href="#" class="logo-link">
+                            <div class="logo">
+                                <i class="fas fa-leaf"></i>
+                                <h3>NextZero Hub</h3>
+                            </div>
+                        </a>
                         <p>AI-powered ESG compliance solutions for small and medium-sized banks in the United Kingdom.</p>
                         <p style="margin-top: 20px;">London | Manchester | Edinburgh</p>
                     </div>
@@ -1415,19 +1582,18 @@
                             <li><i class="fas fa-map-marker-alt"></i> 123 Sustainable Way, London EC1A 1AA</li>
                         </ul>
                         <div style="margin-top: 20px;">
-                            <a href="#" style="color: var(--light-gray); margin-right: 15px; font-size: 1.2rem;"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" style="color: var(--light-gray); margin-right: 15px; font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
-                            <a href="#" style="color: var(--light-gray); font-size: 1.2rem;"><i class="fab fa-github"></i></a>
+                            <a href="https://www.linkedin.com/" target="_blank" style="color: var(--light-gray); margin-right: 15px; font-size: 1.2rem;"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://twitter.com/" target="_blank" style="color: var(--light-gray); margin-right: 15px; font-size: 1.2rem;"><i class="fab fa-twitter"></i></a>
+                            <a href="https://github.com/" target="_blank" style="color: var(--light-gray); font-size: 1.2rem;"><i class="fab fa-github"></i></a>
                         </div>
                     </div>
                 </div>
                 <div class="copyright">
-                    <p>&copy; 2023 NextZero Hub. All rights reserved. | AI-powered ESG solutions for UK banks | Compliant with FCA, PRA and UK ESG regulations</p>
+                    <p>&copy; 2025 NextZero Hub. All rights reserved. | AI-powered ESG solutions for UK banks | Compliant with FCA, PRA and UK ESG regulations</p>
                 </div>
             </div>
         </footer>
 
-        <!-- Results Modal -->
         <div class="modal" id="results-modal">
             <div class="modal-content">
                 <button class="close-btn" id="close-modal">&times;</button>
@@ -1435,25 +1601,33 @@
                 <p>Based on your inputs, our machine learning models have generated these insights:</p>
                 
                 <div class="results-grid">
-                    <div class="result-card">
-                        <h4>Scope 1 Emissions</h4>
-                        <div class="result-value" id="scope1-result">0 tCO2e</div>
-                        <p>Direct emissions from operations</p>
+                    <div id="scope1-card" class="results-card-container">
+                        <div class="result-card">
+                            <h4>Scope 1 Emissions</h4>
+                            <div class="result-value" id="scope1-result">0 tCO2e</div>
+                            <p>Direct emissions from operations</p>
+                        </div>
                     </div>
-                    <div class="result-card">
-                        <h4>Scope 2 Emissions</h4>
-                        <div class="result-value" id="scope2-result">0 tCO2e</div>
-                        <p>Indirect energy emissions</p>
+                    <div id="scope2-card" class="results-card-container">
+                        <div class="result-card">
+                            <h4>Scope 2 Emissions</h4>
+                            <div class="result-value" id="scope2-result">0 tCO2e</div>
+                            <p>Indirect energy emissions</p>
+                        </div>
                     </div>
-                    <div class="result-card">
-                        <h4>Scope 3 Emissions</h4>
-                        <div class="result-value" id="scope3-result">0 tCO2e</div>
-                        <p>Value chain emissions</p>
+                    <div id="scope3-card" class="results-card-container">
+                        <div class="result-card">
+                            <h4>Scope 3 Emissions</h4>
+                            <div class="result-value" id="scope3-result">0 tCO2e</div>
+                            <p>Value chain emissions</p>
+                        </div>
                     </div>
-                    <div class="result-card">
-                        <h4>Green Portfolio Score</h4>
-                        <div class="result-value" id="green-score">0%</div>
-                        <p>Sustainable lending ratio</p>
+                    <div id="green-score-card" class="results-card-container">
+                        <div class="result-card">
+                            <h4>Green Portfolio Score</h4>
+                            <div class="result-value" id="green-score">0%</div>
+                            <p>Sustainable lending ratio</p>
+                        </div>
                     </div>
                 </div>
                 
@@ -1506,110 +1680,225 @@
             init: function() {
                 if (!localStorage.getItem('esg_banks')) {
                     localStorage.setItem('esg_banks', JSON.stringify([
-                        {
-                            id: 1,
-                            name: "London Community Bank",
-                            contact: "sarah.johnson@lcb.co.uk",
-                            assets: 1.2,
-                            lastReport: "2023-10-15",
-                            compliance: 82
-                        },
-                        {
-                            id: 2,
-                            name: "Manchester Mutual",
-                            contact: "david.wilson@manmutual.co.uk",
-                            assets: 0.8,
-                            lastReport: "2023-09-28",
-                            compliance: 75
-                        },
-                        {
-                            id: 3,
-                            name: "Scottish Green Bank",
-                            contact: "fiona.macdonald@scotgreen.co.uk",
-                            assets: 1.5,
-                            lastReport: "2023-10-22",
-                            compliance: 88
-                        },
-                        {
-                            id: 4,
-                            name: "Wales Ethical Finance",
-                            contact: "thomas.evans@walesethical.co.uk",
-                            assets: 0.6,
-                            lastReport: "2023-10-05",
-                            compliance: 69
-                        }
+                        { id: 1, name: "London Community Bank", contact: "sarah.johnson@lcb.co.uk", assets: 1.2, lastReport: "2023-10-15", compliance: 82 },
+                        { id: 2, name: "Manchester Mutual",      contact: "david.wilson@manmutual.co.uk", assets: 0.8, lastReport: "2023-09-28", compliance: 75 },
+                        { id: 3, name: "Scottish Green Bank",    contact: "fiona.macdonald@scotgreen.co.uk", assets: 1.5, lastReport: "2023-10-22", compliance: 88 },
+                        { id: 4, name: "Wales Ethical Finance",  contact: "thomas.evans@walesethical.co.uk", assets: 0.6, lastReport: "2023-10-05", compliance: 69 }
                     ]));
                 }
-                
                 if (!localStorage.getItem('esg_reports')) {
                     localStorage.setItem('esg_reports', JSON.stringify([
-                        {
-                            id: "ESG-2023-001",
-                            bankId: 1,
-                            period: "Q3 2023",
-                            scope1: 1200,
-                            scope2: 3500,
-                            scope3: 15000,
-                            score: 82
-                        },
-                        {
-                            id: "ESG-2023-002",
-                            bankId: 2,
-                            period: "Q3 2023",
-                            scope1: 800,
-                            scope2: 2800,
-                            scope3: 12000,
-                            score: 75
-                        },
-                        {
-                            id: "ESG-2023-003",
-                            bankId: 3,
-                            period: "Q3 2023",
-                            scope1: 950,
-                            scope2: 2600,
-                            scope3: 10500,
-                            score: 88
-                        },
-                        {
-                            id: "ESG-2023-004",
-                            bankId: 4,
-                            period: "Q3 2023",
-                            scope1: 1100,
-                            scope2: 3200,
-                            scope3: 16500,
-                            score: 69
-                        }
+                        { id: "ESG-2023-001", bankId:1, period:"Q3 2023", scope1:1200, scope2:3500, scope3:15000, score:82 },
+                        { id: "ESG-2023-002", bankId:2, period:"Q3 2023", scope1:800,  scope2:2800, scope3:12000, score:75 },
+                        { id: "ESG-2023-003", bankId:3, period:"Q3 2023", scope1:950,  scope2:2600, scope3:10500, score:88 },
+                        { id: "ESG-2023-004", bankId:4, period:"Q3 2023", scope1:1100, scope2:3200, scope3:16500, score:69 }
                     ]));
                 }
             },
-            
             getBanks: function() {
                 return JSON.parse(localStorage.getItem('esg_banks') || '[]');
             },
-            
             getReports: function() {
                 return JSON.parse(localStorage.getItem('esg_reports') || '[]');
             },
-            
             saveReport: function(reportData) {
                 const reports = this.getReports();
-                const newId = `ESG-${new Date().getFullYear()}-${String(reports.length + 1).padStart(3, '0')}`;
-                const newReport = {
-                    id: newId,
-                    ...reportData,
-                    createdAt: new Date().toISOString()
-                };
+                const newId = `ESG-${new Date().getFullYear()}-${String(reports.length+1).padStart(3,'0')}`;
+                const newReport = { id: newId, ...reportData, createdAt: new Date().toISOString() };
                 reports.push(newReport);
                 localStorage.setItem('esg_reports', JSON.stringify(reports));
                 return newReport;
             }
         };
 
+        // --- CHART INITIALIZATION FUNCTION (GLOBAL SCOPE) ---
+        function initPredictionChart(scope1, scope2, scope3, greenScore) {
+            const ctx = document.getElementById('prediction-chart').getContext('2d');
+            
+            const currentYear = new Date().getFullYear();
+            const years = [currentYear, currentYear+1, currentYear+2];
+            
+            const scope1Data = [scope1, scope1 * 0.85, scope1 * 0.72];
+            const scope2Data = [scope2, scope2 * 0.78, scope2 * 0.65];
+            const scope3Data = [scope3, scope3 * 0.82, scope3 * 0.68];
+            const greenScoreData = [greenScore, Math.min(100, greenScore * 1.25), Math.min(100, greenScore * 1.45)];
+            
+            if (window.predictionChart) {
+                window.predictionChart.destroy();
+            }
+            
+            window.predictionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        { label: 'Scope 1 Emissions', data: scope1Data, borderColor: '#1a5d1a', backgroundColor: 'rgba(26, 93, 26, 0.1)', tension: 0.3, fill: false },
+                        { label: 'Scope 2 Emissions', data: scope2Data, borderColor: '#4caf50', backgroundColor: 'rgba(76, 175, 80, 0.1)', tension: 0.3, fill: false },
+                        { label: 'Scope 3 Emissions', data: scope3Data, borderColor: '#00796b', backgroundColor: 'rgba(0, 121, 107, 0.1)', tension: 0.3, fill: false },
+                        { label: 'Green Portfolio Score', data: greenScoreData, borderColor: '#8bc34a', backgroundColor: 'rgba(139, 195, 74, 0.1)', tension: 0.3, fill: false, borderDash: [5, 5] }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: '3-Year ESG Performance Forecast', font: { size: 16 } },
+                        tooltip: { mode: 'index', intersect: false },
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Metrics' } },
+                        x: { title: { display: true, text: 'Year' } }
+                    }
+                }
+            });
+        }
+
+
+        // --- CALCULATION FUNCTIONS (re-ordered to be at the top) ---
+        function hideAllResultCards() {
+            document.getElementById('scope1-card').classList.add('hidden');
+            document.getElementById('scope2-card').classList.add('hidden');
+            document.getElementById('scope3-card').classList.add('hidden');
+            document.getElementById('green-score-card').classList.add('hidden');
+        }
+
+        // Combined Summary Calculation Function
+        function calculateCombined() {
+            const energy = parseFloat(document.getElementById('energy').value) || 0;
+            const fleet = parseFloat(document.getElementById('fleet').value) || 0;
+            const portfolio = parseFloat(document.getElementById('portfolio').value) || 0;
+            const scope3Type = document.getElementById('scope3-type').value;
+            const scope3Value = parseFloat(document.getElementById('scope3-value').value) || 0;
+            const greenPercentage = parseFloat(document.getElementById('green-percentage').value) || 0.5;
+            
+            let scope3;
+            switch(scope3Type) {
+                case 'financed': scope3 = portfolio * scope3Value * 0.85; break;
+                case 'travel':   scope3 = scope3Value * 0.12; break;
+                case 'supply':   scope3 = scope3Value * 0.35; break;
+                case 'waste':    scope3 = scope3Value * 0.08; break;
+                case 'other':    scope3 = scope3Value * 0.15; break;
+            }
+            
+            const scope1 = (fleet * 1.2);
+            const scope2 = (energy * 0.233) / 1000; 
+            const greenScore = Math.min(100, Math.round(greenPercentage * 100 + (Math.random() * 10)));
+            
+            const complianceScore = Math.min(100, Math.max(20, 
+                70 - (scope1/10) - (scope2/10) - (scope3/1000) + (greenScore/2)
+            ));
+            
+            document.getElementById('scope1-result').textContent = scope1.toFixed(2) + ' tCO2e';
+            document.getElementById('scope2-result').textContent = scope2.toFixed(2) + ' tCO2e';
+            document.getElementById('scope3-result').textContent = scope3.toFixed(2) + ' tCO2e';
+            document.getElementById('green-score').textContent = greenScore + '%';
+            document.getElementById('compliance-bar').style.width = complianceScore.toFixed(0) + '%';
+            
+            const reportData = {
+                bankId: 0,
+                period: `Q${Math.floor((new Date().getMonth() + 3) / 3)} ${new Date().getFullYear()}`,
+                scope1: scope1,
+                scope2: scope2,
+                scope3: scope3,
+                greenScore: greenScore,
+                complianceScore: complianceScore,
+                scope3Type: scope3Type
+            };
+            
+            ESGDatabase.saveReport(reportData);
+            
+            hideAllResultCards();
+            document.getElementById('scope1-card').classList.remove('hidden');
+            document.getElementById('scope2-card').classList.remove('hidden');
+            document.getElementById('scope3-card').classList.remove('hidden');
+            document.getElementById('green-score-card').classList.remove('hidden');
+                    
+            initPredictionChart(scope1, scope2, scope3, greenScore);
+            document.getElementById('results-modal').style.display = 'block';
+        }
+
+        function calculateScope1() {
+            const diesel  = parseFloat(document.getElementById('diesel-1').value)      || 0;
+            const petrol  = parseFloat(document.getElementById('petrol-1').value)      || 0;
+            const lpg     = parseFloat(document.getElementById('lpg-1').value)         || 0;
+            const gas     = parseFloat(document.getElementById('natural-gas-1').value) || 0;
+            const refType = document.getElementById('refrigerant-type-1').value;
+            const refVal  = parseFloat(document.getElementById('refrigerant-value-1').value) || 0;
+
+            const dieselKG = diesel * 2.5189;
+            const petrolKG = petrol * 2.3149;
+            const lpgKG    = lpg    * 1.5273;
+            const gasKG    = gas    * 0.18316;
+            const GWP      = { r410a:2088, r134a:1430, r32:675 };
+            const refKG    = refVal * (GWP[refType] || 0);
+            const scope1   = (dieselKG + petrolKG + lpgKG + gasKG + refKG) / 1000;
+
+            hideAllResultCards();
+            document.getElementById('scope1-card').classList.remove('hidden');
+
+            initPredictionChart(scope1, 0, 0, 0);
+            document.getElementById('scope1-result').textContent = scope1.toFixed(2) + ' tCO₂e';
+            document.getElementById('scope2-result').textContent = '0 tCO₂e';
+            document.getElementById('scope3-result').textContent = '0 tCO₂e';
+            document.getElementById('green-score').textContent   = '0%';
+            document.getElementById('compliance-bar').style.width = '0%';
+            
+            document.getElementById('results-modal').style.display = 'block';
+        }
+
+        function calculateScope2() {
+            const energy = parseFloat(document.getElementById('energy-2').value) || 0;
+            const scope2 = (energy * 0.233) / 1000;
+
+            hideAllResultCards();
+            document.getElementById('scope2-card').classList.remove('hidden');
+
+            initPredictionChart(0, scope2, 0, 0);
+            document.getElementById('scope1-result').textContent = '0 tCO₂e';
+            document.getElementById('scope2-result').textContent = scope2.toFixed(2) + ' tCO₂e';
+            document.getElementById('scope3-result').textContent = '0 tCO₂e';
+            document.getElementById('green-score').textContent   = '0%';
+            document.getElementById('compliance-bar').style.width = '0%';
+            document.getElementById('results-modal').style.display = 'block';
+        }
+
+        function calculateScope3() {
+            const portfolio    = parseFloat(document.getElementById('portfolio-3').value) || 0;
+            const scope3Type   = document.getElementById('scope3-type-3').value;
+            const scope3Value  = parseFloat(document.getElementById('scope3-value-3').value) || 0;
+            const greenPercent = parseFloat(document.getElementById('green-percentage-3').value) || 0;
+
+            let scope3;
+            switch (scope3Type) {
+                case 'financed': scope3 = portfolio * scope3Value * 0.85; break;
+                case 'travel':   scope3 = scope3Value * 0.12; break;
+                case 'supply':   scope3 = scope3Value * 0.35; break;
+                case 'waste':    scope3 = scope3Value * 0.08; break;
+                default:         scope3 = scope3Value * 0.15; break;
+            }
+            const greenScore = Math.min(100, Math.round(greenPercent * 100 + (Math.random() * 10)));
+
+            hideAllResultCards();
+            document.getElementById('scope3-card').classList.remove('hidden');
+            document.getElementById('green-score-card').classList.remove('hidden');
+
+            initPredictionChart(0, 0, scope3, greenScore);
+            document.getElementById('scope1-result').textContent = '0 tCO₂e';
+            document.getElementById('scope2-result').textContent = '0 tCO₂e';
+            document.getElementById('scope3-result').textContent = scope3.toFixed(2) + ' tCO₂e';
+            document.getElementById('green-score').textContent   = greenScore + '%';
+            document.getElementById('compliance-bar').style.width = greenScore + '%';
+            document.getElementById('results-modal').style.display = 'block';
+        }
+
+
+        // --- MAIN SCRIPT EXECUTION ---
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize database
             ESGDatabase.init();
-            
-            // Initialize AI Chart
+
+            // --- Chart Initialization ---
             const aiCtx = document.getElementById('ai-chart').getContext('2d');
             const aiChart = new Chart(aiCtx, {
                 type: 'radar',
@@ -1640,272 +1929,61 @@
                 options: {
                     scales: {
                         r: {
-                            angleLines: {
-                                display: true
-                            },
+                            angleLines: { display: true },
                             suggestedMin: 0,
                             suggestedMax: 100
                         }
                     },
                     plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Portfolio ESG Performance Analysis'
-                        }
+                        legend: { position: 'top' },
+                        title: { display: true, text: 'Portfolio ESG Performance Analysis' }
                     }
                 }
             });
-             // Dynamic Scope 3 Input Configuration
-            const scope3Type = document.getElementById('scope3-type');
-            const scope3Label = document.getElementById('scope3-value-label');
-            const scope3Input = document.getElementById('scope3-value');
-            const scope3Helper = document.getElementById('scope3-helper');
-            // Configure based on selected category
-            function configureScope3Input() {
-                const type = scope3Type.value;
-                
-                switch(type) {
-                    case 'financed':
-                        scope3Label.textContent = 'Carbon Intensity Factor';
-                        scope3Input.placeholder = 'Enter tCO₂e per £ million';
-                        scope3Helper.textContent = 'Metric tons CO₂e per £ million financed (UK avg: 15-30)';
-                        break;
-                        
-                    case 'travel':
-                        scope3Label.textContent = 'Annual Travel Distance';
-                        scope3Input.placeholder = 'Enter kilometers traveled';
-                        scope3Helper.textContent = 'Total kilometers traveled per year (UK bank avg: 500k-2M km)';
-                        break;
-                        
-                    case 'supply':
-                        scope3Label.textContent = 'Supply Chain Spend';
-                        scope3Input.placeholder = 'Enter annual spend in £';
-                        scope3Helper.textContent = 'Total annual supply chain spend in £ (UK bank avg: £5M-20M)';
-                        break;
-                        
-                    case 'waste':
-                        scope3Label.textContent = 'Waste Generated';
-                        scope3Input.placeholder = 'Enter tons of waste';
-                        scope3Helper.textContent = 'Total tons of waste generated annually (UK bank avg: 100-500 tons)';
-                        break;
-                        
-                    case 'other':
-                        scope3Label.textContent = 'Activity Metric';
-                        scope3Input.placeholder = 'Enter activity value';
-                        scope3Helper.textContent = 'Relevant metric for the activity (e.g., units, quantity)';
-                        break;
-                }
-            }
-            // Initial configuration
-            configureScope3Input();
-            
-            // Update when selection changes
-            scope3Type.addEventListener('change', configureScope3Input);
-            
-            // Emissions calculator
-            const calculatorForm = document.getElementById('emissions-calculator');
-            if (calculatorForm) {
-                calculatorForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    // Get values from form
-                    const energy = parseFloat(document.getElementById('energy').value) || 0;
-                    const fleet = parseFloat(document.getElementById('fleet').value) || 0;
-                    const portfolio = parseFloat(document.getElementById('portfolio').value) || 0;
-                    const scope3Type = document.getElementById('scope3-type').value;
-                    const scope3Value = parseFloat(document.getElementById('scope3-value').value) || 0;
-                    const greenPercentage = parseFloat(document.getElementById('green-percentage').value) || 0.5;
-                    
-                    // NEW: Category-specific calculations
-                    let scope3;
-                    switch(scope3Type) {
-                        case 'financed':
-                            scope3 = portfolio * scope3Value * 0.85; 
-                            break;
-                        case 'travel':
-                            scope3 = scope3Value * 0.12; // kgCO2e per km
-                            break;
-                        case 'supply':
-                            scope3 = scope3Value * 0.35; // kgCO2e per £
-                            break;
-                        case 'waste':
-                            scope3 = scope3Value * 0.08; // kgCO2e per ton
-                            break;
-                        case 'other':
-                            scope3 = scope3Value * 0.15; // Generic multiplier
-                            break;
-                    }
-                    
-                    // Standard calculations
-                    const scope1 = fleet * 2.31; 
-                    const scope2 = energy * 0.233; 
-                    const greenScore = Math.min(100, Math.round(greenPercentage * 100 + (Math.random() * 10)));
-                    
-                    // Calculate compliance rating (0-100)
-                    const complianceScore = Math.min(100, Math.max(20, 
-                        70 - (scope1/100) - (scope2/100) - (scope3/1000) + (greenScore/2)
-                    ));
-                    
-                    // Update modal with results
-                    document.getElementById('scope1-result').textContent = scope1.toFixed(2) + ' tCO2e';
-                    document.getElementById('scope2-result').textContent = scope2.toFixed(2) + ' tCO2e';
-                    document.getElementById('scope3-result').textContent = scope3.toFixed(2) + ' tCO2e';
-                    document.getElementById('green-score').textContent = greenScore + '%';
-                    document.getElementById('compliance-bar').style.width = complianceScore.toFixed(0) + '%';
-                    
-                    // Save to database
-                    const reportData = {
-                        bankId: 0,
-                        period: `Q${Math.floor((new Date().getMonth() + 3) / 3)} ${new Date().getFullYear()}`,
-                        scope1: scope1,
-                        scope2: scope2,
-                        scope3: scope3,
-                        greenScore: greenScore,
-                        complianceScore: complianceScore,
-                        scope3Type: scope3Type
-                    };
-                    
-                    ESGDatabase.saveReport(reportData);
-                            
-                    // Initialize prediction chart
-                    initPredictionChart(scope1, scope2, scope3, greenScore);
-                    
-                    // Show modal
-                    document.getElementById('results-modal').style.display = 'block';
-                    document.querySelector('.modal-content').scrollTop = 0;
+
+            // ——— Tab switching logic ———
+            document.querySelectorAll('.scope-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.scope-tab').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const scope = btn.getAttribute('data-scope');
+                    document.querySelectorAll('.scope-panel').forEach(p => p.classList.remove('active'));
+                    document.getElementById(`scope-${scope}-panel`).classList.add('active');
                 });
-            }
+            });
+
+            // ——— Main Calculate button handler ———
+            document.getElementById('calculate-btn').addEventListener('click', e => {
+                e.preventDefault();
+                const activeScope = document.querySelector('.scope-tab.active').getAttribute('data-scope');
+                if (activeScope === 'summary') calculateCombined();
+                else if (activeScope === '1') calculateScope1();
+                else if (activeScope === '2') calculateScope2();
+                else if (activeScope === '3') calculateScope3();
+            });
             
-            function initPredictionChart(scope1, scope2, scope3, greenScore) {
-                const ctx = document.getElementById('prediction-chart').getContext('2d');
-                
-                // Generate prediction data based on inputs
-                const currentYear = new Date().getFullYear();
-                const years = [currentYear, currentYear+1, currentYear+2];
-                
-                const scope1Data = [
-                    scope1,
-                    scope1 * 0.85,
-                    scope1 * 0.72
-                ];
-                
-                const scope2Data = [
-                    scope2,
-                    scope2 * 0.78,
-                    scope2 * 0.65
-                ];
-                
-                const scope3Data = [
-                    scope3,
-                    scope3 * 0.82,
-                    scope3 * 0.68
-                ];
-                
-                const greenScoreData = [
-                    greenScore,
-                    Math.min(100, greenScore * 1.25),
-                    Math.min(100, greenScore * 1.45)
-                ];
-                
-                // Destroy previous chart if exists
-                if (window.predictionChart) {
-                    window.predictionChart.destroy();
-                }
-                
-                window.predictionChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: years,
-                        datasets: [
-                            {
-                                label: 'Scope 1 Emissions',
-                                data: scope1Data,
-                                borderColor: '#1a5d1a',
-                                backgroundColor: 'rgba(26, 93, 26, 0.1)',
-                                tension: 0.3,
-                                fill: false
-                            },
-                            {
-                                label: 'Scope 2 Emissions',
-                                data: scope2Data,
-                                borderColor: '#4caf50',
-                                backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                                tension: 0.3,
-                                fill: false
-                            },
-                            {
-                                label: 'Scope 3 Emissions',
-                                data: scope3Data,
-                                borderColor: '#00796b',
-                                backgroundColor: 'rgba(0, 121, 107, 0.1)',
-                                tension: 0.3,
-                                fill: false
-                            },
-                            {
-                                label: 'Green Portfolio Score',
-                                data: greenScoreData,
-                                borderColor: '#8bc34a',
-                                backgroundColor: 'rgba(139, 195, 74, 0.1)',
-                                tension: 0.3,
-                                fill: false,
-                                borderDash: [5, 5]
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: '3-Year ESG Performance Forecast',
-                                font: {
-                                    size: 16
-                                }
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
-                            },
-                            legend: {
-                                position: 'top',
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Metrics'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Year'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            
-            // Close modal
             document.getElementById('close-modal').addEventListener('click', function() {
                 document.getElementById('results-modal').style.display = 'none';
             });
             
-            // Close modal when clicking outside
             document.getElementById('results-modal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     this.style.display = 'none';
                 }
             });
+
+            document.getElementById('contact-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('results-modal').style.display = 'none';
+                const targetElement = document.querySelector('#contact');
+                if (targetElement) {
+                    window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                    });
+                }
+            });
             
-            // Contact form submission
             const contactForm = document.getElementById('contact-form');
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e) {
@@ -1915,7 +1993,6 @@
                 });
             }
             
-            // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -1933,7 +2010,6 @@
                 });
             });
             
-            // Animation on scroll
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
@@ -1952,7 +2028,6 @@
                 observer.observe(el);
             });
             
-            // Admin login functionality
             document.getElementById('admin-login-link').addEventListener('click', function(e) {
                 e.preventDefault();
                 document.getElementById('main-app').style.display = 'none';
@@ -1964,16 +2039,13 @@
                 const email = document.getElementById('admin-email').value;
                 const password = document.getElementById('admin-password').value;
                 
-                // Simple authentication
                 if (email === 'admin@nextzerohub.co.uk' && password === 'securepassword') {
                     document.getElementById('login-section').style.display = 'none';
                     document.getElementById('admin-panel').style.display = 'block';
                     
-                    // Update stats
                     document.getElementById('banks-count').textContent = ESGDatabase.getBanks().length;
                     document.getElementById('reports-count').textContent = ESGDatabase.getReports().length;
                     
-                    // Calculate average score
                     const reports = ESGDatabase.getReports();
                     if (reports.length > 0) {
                         const total = reports.reduce((sum, report) => sum + report.score, 0);
@@ -1984,32 +2056,105 @@
                     alert('Invalid credentials. Please try again.');
                 }
             });
+
+            document.getElementById('login-back-to-main').addEventListener('click', function() {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('admin-login-form').reset();
+            });
             
-            // Back to main site from admin panel
             document.getElementById('back-to-main').addEventListener('click', function() {
                 document.getElementById('admin-panel').style.display = 'none';
                 document.getElementById('main-app').style.display = 'block';
             });
             
-            // Admin tab switching
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
                     document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-                    
-                    // Add active class to clicked tab
                     this.classList.add('active');
-                    
-                    // Hide all tab content
                     document.querySelectorAll('.tab-content').forEach(content => {
                         content.style.display = 'none';
                     });
-                    
-                    // Show the selected tab content
                     const tabName = this.getAttribute('data-tab');
                     document.getElementById(`${tabName}-content`).style.display = 'block';
                 });
             });
+            
+            const scope3Type = document.getElementById('scope3-type');
+            const scope3Label = document.getElementById('scope3-value-label');
+            const scope3Input = document.getElementById('scope3-value');
+            const scope3Helper = document.getElementById('scope3-helper');
+            
+            function configureScope3Input() {
+                const type = scope3Type.value;
+                switch(type) {
+                    case 'financed':
+                        scope3Label.textContent = 'Carbon Intensity Factor';
+                        scope3Input.placeholder = 'Enter tCO₂e per £ million';
+                        scope3Helper.textContent = 'Metric tons CO₂e per £ million financed (UK avg: 15-30)';
+                        break;
+                    case 'travel':
+                        scope3Label.textContent = 'Annual Travel Distance';
+                        scope3Input.placeholder = 'Enter kilometers traveled';
+                        scope3Helper.textContent = 'Total kilometers traveled per year (UK bank avg: 500k-2M km)';
+                        break;
+                    case 'supply':
+                        scope3Label.textContent = 'Supply Chain Spend';
+                        scope3Input.placeholder = 'Enter annual spend in £';
+                        scope3Helper.textContent = 'Total annual supply chain spend in £ (UK bank avg: £5M-20M)';
+                        break;
+                    case 'waste':
+                        scope3Label.textContent = 'Waste Generated';
+                        scope3Input.placeholder = 'Enter tons of waste';
+                        scope3Helper.textContent = 'Total tons of waste generated annually (UK bank avg: 100-500 tons)';
+                        break;
+                    case 'other':
+                        scope3Label.textContent = 'Activity Metric';
+                        scope3Input.placeholder = 'Enter activity value';
+                        scope3Helper.textContent = 'Relevant metric for the activity (e.g., units, quantity)';
+                        break;
+                }
+            }
+            scope3Type.addEventListener('change', configureScope3Input);
+            configureScope3Input();
+
+            const scope3Type3 = document.getElementById('scope3-type-3');
+            const scope3Label3 = document.getElementById('scope3-value-3-label');
+            const scope3Input3 = document.getElementById('scope3-value-3');
+            const scope3Helper3 = document.getElementById('scope3-helper-3');
+            
+            function configureScope3TabInputs() {
+                const type = scope3Type3.value;
+                switch(type) {
+                    case 'financed':
+                        scope3Label3.textContent = 'Carbon Intensity Factor';
+                        scope3Input3.placeholder = 'Enter tCO₂e per £ million';
+                        scope3Helper3.textContent = 'Metric tons CO₂e per £ million financed (UK avg: 15-30)';
+                        break;
+                    case 'travel':
+                        scope3Label3.textContent = 'Annual Travel Distance';
+                        scope3Input3.placeholder = 'Enter kilometers traveled';
+                        scope3Helper3.textContent = 'Total kilometers traveled per year (UK bank avg: 500k-2M km)';
+                        break;
+                    case 'supply':
+                        scope3Label3.textContent = 'Supply Chain Spend';
+                        scope3Input3.placeholder = 'Enter annual spend in £';
+                        scope3Helper3.textContent = 'Total annual supply chain spend in £ (UK bank avg: £5M-20M)';
+                        break;
+                    case 'waste':
+                        scope3Label3.textContent = 'Waste Generated';
+                        scope3Input3.placeholder = 'Enter tons of waste';
+                        scope3Helper3.textContent = 'Total tons of waste generated annually (UK bank avg: 100-500 tons)';
+                        break;
+                    case 'other':
+                        scope3Label3.textContent = 'Activity Metric';
+                        scope3Input3.placeholder = 'Enter activity value';
+                        scope3Helper3.textContent = 'Relevant metric for the activity (e.g., units, quantity)';
+                        break;
+                }
+            }
+            scope3Type3.addEventListener('change', configureScope3TabInputs);
+            configureScope3TabInputs();
         });
     </script>
 </body>
